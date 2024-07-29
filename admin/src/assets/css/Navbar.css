@@ -1,0 +1,7 @@
+.navLinkHover:hover a{
+    color: #fff !important;
+}
+
+.active a{
+    color: #fff !important;
+}

@@ -1,0 +1,7 @@
+.breadcrumb{
+    border: 0 !important;
+}
+
+ol.breadcrumb .breadcrumb-item a a{
+    color: #fff !important;
+}
