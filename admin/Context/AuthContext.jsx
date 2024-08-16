@@ -5,7 +5,15 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [loading, setLoading] = useState(true); 
-  // const [uid, setUid] = useState(null);
+  const refreshToken = (newToken) => {
+    try{
+      localStorage.removeItem('token');
+      localStorage.setItem('token', newToken);
+      setToken(newToken)
+    }catch(err){
+      console.log('Token refresh failed');
+    }
+  }
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -14,7 +22,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ token, setToken, loading }}>
+    <AuthContext.Provider value={{ token, setToken, loading, refreshToken }}>
       {children}
     </AuthContext.Provider>
   );

@@ -16,10 +16,15 @@ function ListProduct(props) {
   const getProduct = async () => {
     await fetch("http://localhost:4000/product/all", {
       method: "GET",
+      headers: {
+        'Authorization': props.token
+      }
     })
       .then((response) => response.json())
       .then((data) => {
-        setProducts({ ...products, data: data, isEdit: false });
+        console.log(data);
+        props.refreshToken(data.token);
+        setProducts({ ...products, data: data.data, isEdit: false });
         document.querySelector('.grow').value = '';
       });
   };

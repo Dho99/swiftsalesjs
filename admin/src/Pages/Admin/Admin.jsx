@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./Admin.css";
 import Sidebar from "../../Components/Sidebar/Sidebar";
 import NavComponent from "../../Components/Navbar/Navbar";
@@ -7,12 +7,11 @@ import Cookies from "universal-cookie";
 import { AuthContext } from "../../../Context/AuthContext";
 import { useNavigate, Navigate } from "react-router-dom";
 
-
 function Admin() {
   const [isSidebarCollapsed, setCollapse] = useState(false);
   const [pageTitle, setPageTitle] = useState("Dashboard");
   const [breakpoints, setBreakpoints] = useState("");
-  const {token, loading} = useContext(AuthContext);
+  const { token, loading } = useContext(AuthContext);
   const handleSidebar = () => {
     setCollapse(!isSidebarCollapsed);
   };
@@ -41,33 +40,36 @@ function Admin() {
   };
 
   return (
-    <div className="max-h-screen h-full overflow-hidden">
-      {token ? (
-        <NavComponent
-          isCollapsed={isSidebarCollapsed}
-          changePageTitle={changePageTitle}
-        />
-      ):(
-        ""
-      )}
-      <div className="flex">
+    <>
+      <div className="max-h-screen h-full overflow-hidden">
         {token ? (
-          <Sidebar
+          <NavComponent
             isCollapsed={isSidebarCollapsed}
-            handleSidebar={handleSidebar}
-            breakpoints={breakpoints}
             changePageTitle={changePageTitle}
           />
+        ) : (
+          ""
+        )}
+        <div className="flex">
+          {token ? (
+            <Sidebar
+              isCollapsed={isSidebarCollapsed}
+              handleSidebar={handleSidebar}
+              breakpoints={breakpoints}
+              changePageTitle={changePageTitle}
+            />
+          ) : (
+            ""
+          )}
 
-        ) : ""}
-      
-        <Pages
-          isCollapsed={isSidebarCollapsed}
-          pageTitle={pageTitle}
-          setPageTitle={setPageTitle}
-        />
+          <Pages
+            isCollapsed={isSidebarCollapsed}
+            pageTitle={pageTitle}
+            setPageTitle={setPageTitle}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

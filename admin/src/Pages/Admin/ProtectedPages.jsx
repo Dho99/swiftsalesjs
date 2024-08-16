@@ -14,9 +14,8 @@ const ProtectedPages = () => {
       },
       body: JSON.stringify(clientToken),
     })
-      .then((res) => res.json())
-      .then((result) => {
-        console.log(result);
+    .then((res) => res.json())
+    .then((result) => {
         if (!result.success) {
           localStorage.removeItem("token");
           setToken(null);

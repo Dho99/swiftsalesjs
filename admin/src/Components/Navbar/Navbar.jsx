@@ -8,11 +8,18 @@ import { AuthContext } from "../../../Context/AuthContext";
 const NavComponent = (props) => {
   const nav = useNavigate();
   const {token, loading, setToken} = useContext(AuthContext)
-  const logout = () => {
+  const logout = async() => {
     if(confirm('Apakah anda ingin mengakhiri sesi ini ?')){
-      setToken(null);
-      localStorage.removeItem("token");
-      nav('/login');
+      await fetch('http://localhost:4000/logout', {
+        method: 'GET'
+      }).then((response) => response.json()).then((result) => {
+        console.log(result);
+          if(result.success){
+            setToken(null);
+            localStorage.removeItem("token");
+            nav('/login');
+          }
+      });
     }
   }
 

@@ -34,10 +34,12 @@ function Login(props) {
         },
         body: JSON.stringify(userData)
       }).then((resp) => resp.json()).then((konz) => {
+        console.log(konz)
         if(konz.success){
           setToken(konz.token);
           localStorage.setItem("token",konz.token);
-          window.location.href = '/dashboard'
+          window.location.href = '/dashboard';
+         
         }else{
           setToken(null);
           localStorage.removeItem("token")

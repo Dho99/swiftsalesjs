@@ -7,10 +7,17 @@ function Dashboard(props) {
   const getDashboardData = async () => {
     await fetch("http://localhost:4000/dashboard", {
       method: "GET",
+      headers: {
+        "Authorization": props.token
+      }
     })
       .then((resp) => resp.json())
       .then((result) => {
         setData(result.data);
+        props.refreshToken(result.token);
+      }).catch((err) => {
+        console.log(err.message);
+        alert(err.message)
       });
   };
 

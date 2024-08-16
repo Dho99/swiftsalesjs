@@ -17,7 +17,7 @@ import { AuthContext } from "../../../Context/AuthContext";
 
 const Pages = (props) => {
   const currLocation = useLocation();
-  const {token} = useContext(AuthContext);
+  const {token, setToken, refreshToken} = useContext(AuthContext);
   return (
     <AuthProvider>
       {
@@ -34,15 +34,15 @@ const Pages = (props) => {
                 <Route
                   path="/dashboard"
                   index={true}
-                  element={<Dashboard setPageTitle={props.setPageTitle} />}
+                  element={<Dashboard setPageTitle={props.setPageTitle} token={token} refreshToken={refreshToken}/>}
                 />
                 <Route
                   path="/addproduct"
-                  element={<AddProduct setPageTitle={props.setPageTitle} />}
+                  element={<AddProduct setPageTitle={props.setPageTitle}/>}
                 />
                 <Route
                   path="/listproduct"
-                  element={<ListProduct setPageTitle={props.setPageTitle} />}
+                  element={<ListProduct setPageTitle={props.setPageTitle} token={token} refreshToken={refreshToken}/>}
                 />
                 <Route
                   path="/stockproduct"
