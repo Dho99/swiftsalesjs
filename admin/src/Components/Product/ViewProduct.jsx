@@ -56,7 +56,7 @@ const ViewProduct = (props) => {
       await fetch(`http://localhost:4000/product/${product.id}`,{
         method: 'PUT',
         headers: {
-          'Content-Type':'application/json'
+          'Content-Type':'application/json',
         },
         body: JSON.stringify(product)
       }).then((res) => res.json())
@@ -70,16 +70,22 @@ const ViewProduct = (props) => {
     }
   };
 
+  const productImage = () => {
+    
+  }
+
   useEffect(() => {
-    //   console.log(params.id);
     fetch(`http://localhost:4000/product/${params.id}`, {
       method: "GET",
+      headers: {
+        'Authorization': localStorage.getItem('token')
+      }
     })
       .then((res) => res.json())
       .then((data) => {
         setProduct(data.data[0]);
         props.setPageTitle(`Detail data produk ${product.name}`);
-        // console.log(data);
+        console.log(data);
       });
       // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -186,19 +192,21 @@ const ViewProduct = (props) => {
           </div>
         </div>
 
-        <div className="w-full grid grid-cols-1">
+        {/* <div className="w-full grid grid-cols-1">
           <div className="label">
             <div className="label-text">Pratinjau Gambar</div>
           </div>
-          <div className="border rounded-md max-h-96 h-full overflow-auto">
-            <img
+          <div className="border rounded-md max-h-96 h-full overflow-auto"> */}
+          {productImage}
+            {/* <img
               src={product.image ? product.image : noImage}
               // src={image ? URL.createObjectURL(image) : noImage}
               className="flex justify-center"
               alt={`Product Image`}
-            />
-          </div>
-        </div>
+            /> */}
+          {/* </div>
+        </div> */}
+        
       </div>
       <div className="w-full pt-4 pb-3 flex">
         {/* <button className="btn hover:btn-ghost">Kembali</button> */}

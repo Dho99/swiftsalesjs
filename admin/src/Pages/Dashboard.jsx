@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Refresh from "../Components/Token/Refresh";
 
 function Dashboard(props) {
   const [data, setData] = useState([]);
@@ -13,8 +14,8 @@ function Dashboard(props) {
     })
       .then((resp) => resp.json())
       .then((result) => {
+        console.log(result);
         setData(result.data);
-        props.refreshToken(result.token);
       }).catch((err) => {
         console.log(err.message);
         alert(err.message)
@@ -25,9 +26,10 @@ function Dashboard(props) {
     props.setPageTitle("Dashboard");
     getDashboardData();
   }, []);
-
+  
   return (
     <>
+    <Refresh />
       <div className="grid gap-2 lg:grid-cols-3 md:grid-cols-2 grid-cols-1">
         <Link
           to={"/order/all"}
