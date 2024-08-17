@@ -1,56 +1,105 @@
 const express = require("express");
 const productRouter = express.Router();
-const Product = require('../models/product');
+const Product = require("../models/product");
+const { refreshToken } = require("../utils/jwtHelper");
 
 // storage util
 const { upload, deleteImage } = require("../utils/storage");
 
-
 productRouter.get("/all", async (req, res) => {
-  const products = await Product.find({});
-  res.json(products);
+  let products;
+  try {
+    const newToken = await new Promise((resolve, reject) => {
+      refreshToken(req.header("Authorization"), (token, err) => {
+        if (err) {
+          reject(err.message);
+        } else {
+          resolve(token);
+        }
+      });
+    });
+    products = await Product.find({});
+    res.json({
+      success: true,
+      data: products,
+      token: newToken,
+      message: "Token refresh success",
+    });
+  } catch (err) {
+    res.json({
+      success: false,
+      data: null,
+      token: null,
+      message: "Token refresh failed, reason : " + err.message,
+    });
+  }
 });
 
-
 productRouter.get("/:id", async (req, res) => {
-  let productData = await Product.find({ _id: req.params.id });
-  res.json({
-    success: true,
-    data: productData,
-  });
+  let productData;
+  try {
+    productData = await Product.find({ _id: req.params.id });
+    res.json({
+      success: true,
+      data: productData,
+    });
+  } catch (err) {
+    res.json({
+      success: false,
+      data: "An error occured, reason : " + err.message,
+    });
+  }
 });
 
 productRouter.put("/:id", async (req, res) => {
-  let updateProduct = await Product.findOneAndUpdate(
-    { id: req.params.id },
-    req.body
-  );
-  res.json({
-    success: true,
-    message: "Product Edited Successfuly",
-  });
+  let updateProduct;
+  try {
+    updateProduct = await Product.findOneAndUpdate(
+      { id: req.params.id },
+      req.body
+    );
+    res.json({
+      success: true,
+      message: "Product Edited Successfuly",
+    });
+  } catch (err) {
+    res.json({
+      success: false,
+      message: "An error occured, reason : " + err.message,
+    });
+  }
 });
 
 productRouter.delete("/:id", async (req, res) => {
-  const findProduct = await Product.findOneAndDelete({ id: req.params.id });
-  const imageUrlPath = findProduct.image;
-  const replaceUrlPath = imageUrlPath.replace(
-    "http://localhost:4000/",
-    "./upload/"
-  );
-  deleteImage(replaceUrlPath, (resp) => {
-    if (resp.success) {
-      res.json({
-        success: true,
-        message: "Product deleted Successfully",
-      });
-    } else {
-      res.json({
-        success: false,
-        message: resp.message,
-      });
-    }
-  });
+  let findProduct;
+  let imageUrlPath;
+  let replaceUrlPath;
+  try {
+    findProduct = await Product.findOneAndDelete({ id: req.params.id });
+    imageUrlPath = findProduct.image;
+    replaceUrlPath = imageUrlPath.replace(
+      "http://localhost:4000/",
+      "./upload/"
+    );
+    deleteImage(replaceUrlPath, (resp) => {
+      if (resp.success) {
+        res.json({
+          success: true,
+          message: "Product deleted Successfully",
+        });
+      } else {
+        res.json({
+          success: false,
+          message: resp.message,
+        });
+      }
+    });
+  } catch (err) {
+    res.json({
+      success: false,
+      message: "An error occured, reason : " + err.message,
+    });
+  }
 });
 
 productRouter.post("/create", async (req, res) => {
@@ -98,7 +147,5 @@ productRouter.post("/upload/image", upload.single("product"), (req, res) => {
     image_filename: req.file.originalname,
   });
 });
-
-
 
 module.exports = productRouter;

@@ -5,42 +5,72 @@ const app = express();
 const cors = require("cors");
 const db = require("./utils/serverconnect.js");
 const session = require('express-session');
+const bodyParser = require('body-parser');
+// const rto = require('connect-timeout');
 
-// Router Import
-const dashboardRouter = require('./router/dashboard.js');
-const ordersRouter = require('./router/orders.js');
-const productRouter = require('./router/product.js');
-const userRouter = require('./router/user.js');
-const authRouter = require('./router/authenticate.js');
+// Import Authenticated Route
+const authenticatedRouter = require('./middleware/authenticated.js');
+const authRouter = require("./router/authenticate.js");
+const guestRouter = require('./router/guest.js');
+const { verifyToken,refreshToken } = require('./utils/jwtHelper.js');
 
 // Using parser and Cors
 app.use(express.json());
 app.use(cors());
+// app.use(rto('10s'));
 
-// Creating Middleware Using Express Session
-app.use(session({
-  secret: process.env.EXPRESS_SESSION_KEY,
-  resave: false,
-  saveUninitialized: false
-}))
+app.use((req, res, next) => {
+  res.setTimeout(2000, ()=>{
+      res.sendStatus(408);
+  })
+  next();
+});
 
+app.use('/token/verify', verifyToken, (req, res) => {
+  res.json({
+    success: true,
+    message: 'Token validated'
+  })
+});
 
+app.get('/token/refresh', async(req, res) => {
+  try{
+    const newClientToken = await new Promise((resolve, reject) => {
+      refreshToken(req.header("Authorization"), (newToken, err) => {
+        if (err) {
+          reject(err.message);
+        } else {
+          resolve(newToken);
+        }
+      });
+    })
+    res.json({
+      success: true,
+      data: newClientToken
+    });
+  }catch(err){
+    res.json({
+      success: false,
+      type: err,
+      message: err.message
+    })
+  }
+})
 
-// Use external router
-app.use(dashboardRouter);
-app.use('/order', ordersRouter);
-app.use('/product', productRouter);
-app.use(userRouter);
+app.use('/guest',guestRouter)
 app.use(authRouter);
+app.use(authenticatedRouter);
 
 
-
-// Static
-app.use("/images", express.static("upload/images"));
 app.listen(port, (error) => {
   if (!error) {
     console.log("Server Running on Port " + port);
   } else {
     console.log("Error : " + error);
   }
+});
+
+
+app.all('*', (req, res) => {
+  res.status(404).send('<h1>404! Page not found</h1>');
 });

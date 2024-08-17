@@ -1,45 +1,50 @@
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.JWT_SECRET;
-const Session = require('../models/session');
-
 
 const generateToken = (user) => {
     return jwt.sign({ id: user._id, email: user.email }, SECRET_KEY, {
-        expiresIn: 3 * 24 * 60 * 60
+        expiresIn: '1h'
     });
 };
-const verifyToken = (token, cbk) => {
-    return jwt.verify(token, SECRET_KEY, (err, decoded) => {
-        if(err){
-            cbk({
-                success: false,
-                message: err.message
-            })
-        }else{
-            cbk({
-                success: true,
-                message: 'Token Verified Successfully'
-            })
-        }
-    });
-};
-
-const storeTokenToDB = async(args, cb) => {
-    const storeSession = new Session({
-        userEmail: args.email,
-        token: args.token
-    });
-    try{
-        await storeSession.save();
-        cb({
-            success: true,
-            message: 'Token stored'
-        });
-    }catch(err){
-        cb({
-            success: false,
-            message: 'Token Store Failed, reason : '+err.message
+const verifyToken = (req, res, next) => {
+    const token = req.header('Authorization');
+    if(token){
+        jwt.verify(token, SECRET_KEY, (err, decoded) => {
+            if(err){
+                res.status(500).json({
+                    success: false,
+                    type: err.name,
+                    message: 'Token verify error, reason: '+err.message
+                })
+            }else{
+                next();
+            }
         });
     }
+};
+
+const refreshToken = (oldToken, newToken, error) => {
+    if(oldToken){
+        jwt.verify(oldToken, SECRET_KEY, (err, decoded) => {
+            if(err){
+                error({
+                    success: false,
+                    message: 'An error occured, Reason : '+err.message
+                });
+            }else{
+                const userNewToken = {
+                    _id: decoded.id,
+                    email: decoded.email
+                }
+                newToken(generateToken(userNewToken));
+            }
+        })
+    }else{
+        err({
+            success: false,
+            message: 'Must provide Token'
+        })
+    }
 }
-module.exports = { generateToken, verifyToken, storeTokenToDB };
+
+module.exports = { generateToken, verifyToken, refreshToken };

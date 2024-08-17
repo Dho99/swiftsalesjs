@@ -4,6 +4,9 @@ const { generateToken, verifyToken, storeTokenToDB } = require("../utils/jwtHelp
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 
+const session = require('express-session');
+const store = new session.MemoryStore();
+
 authRouter.post("/login", async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (user) {
@@ -17,18 +20,12 @@ authRouter.post("/login", async (req, res) => {
           });
         } else {
           const token = generateToken(user);
-          res.json({
-            success: true,
-            message: "Login Success",
-            token: token,
-          });
-          const storeToken = {
-            email: user.email,
-            token: token
-          };
-          storeTokenToDB(storeToken, (resp) => {
-            console.log(resp);
-          });
+            res.json({
+              success: true,
+              message: "Login Success",
+              token: token,
+            });
+          // }
         }
       })
       .catch((err) => {
@@ -45,10 +42,20 @@ authRouter.post("/login", async (req, res) => {
   }
 });
 
-authRouter.post("/verifyToken", async (req, res) => {
-  await verifyToken(req.body.ctoken, (cbk) => {
-    res.json(cbk);
-  });
+authRouter.get('/logout', (req, res) => {
+  // req.session.destroy((err) => {
+  //   if(err){
+  //     res.json({
+  //       success: false,
+  //       message: 'an error occured '+err.message
+  //     });
+  //   }else{
+      res.json({
+        success: true,
+        message: 'End session success'
+      });
+  //   }
+  // })
 });
 
 module.exports = authRouter;
