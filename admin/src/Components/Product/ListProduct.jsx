@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Refresh from "../Token/Refresh";
 
 function ListProduct(props) {
   const [products, setProducts] = useState({
@@ -58,6 +59,7 @@ function ListProduct(props) {
 
   return (
     <div className="static">
+      <Refresh/>
       <div className="bg-white rounded-lg p-5 overflow-hidden ">
         <div className="mb-5 flex ms-auto">
           <div className="flex ms-auto">

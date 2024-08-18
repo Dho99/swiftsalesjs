@@ -16,9 +16,17 @@ function Admin() {
     setCollapse(!isSidebarCollapsed);
   };
   const nav = useNavigate();
+  const [tokenAvailable, setAvailable] = useState(false);
 
   useEffect(() => {
-    // console.log(token);
+    console.log(token);
+    if(token == 'undefined'){
+      setAvailable(false);
+    }else if(token == null){
+      setAvailable(false);
+    }else{
+      setAvailable(true);
+    }
     const handleWhileResize = () => {
       let screenWidth = window.innerWidth;
       if (screenWidth < 1000) {
@@ -42,7 +50,7 @@ function Admin() {
   return (
     <>
       <div className="max-h-screen h-full overflow-hidden">
-        {token ? (
+        {tokenAvailable ? (
           <NavComponent
             isCollapsed={isSidebarCollapsed}
             changePageTitle={changePageTitle}
@@ -51,7 +59,7 @@ function Admin() {
           ""
         )}
         <div className="flex">
-          {token ? (
+          {tokenAvailable ? (
             <Sidebar
               isCollapsed={isSidebarCollapsed}
               handleSidebar={handleSidebar}

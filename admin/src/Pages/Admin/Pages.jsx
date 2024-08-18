@@ -24,22 +24,8 @@ import { AuthContext } from "../../../Context/AuthContext";
 const Pages = (props) => {
   const currLocation = useLocation();
   const { token, setToken, refreshToken } = useContext(AuthContext);
-  const goToLogin = () => {
-    window.location.href = '/login';
-  }
   return (
     <AuthProvider>
-      {token ? (
-        currLocation.pathname == "/login" ? (
-          <Navigate to={"/dashboard"} />
-        ) : currLocation.pathname == "/" ? (
-          <Navigate to={"/dashboard"} />
-        ) : (
-          ""
-        )
-      ) : (
-        goToLogin
-      )}
       <div className="bg-slate-200 h-screen w-screen max-h-screen overflow-auto">
         <Routes>
           <Route element={<ProtectedPages setPageTitle={props} />}>

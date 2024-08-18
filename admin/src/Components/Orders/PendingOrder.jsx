@@ -1,8 +1,11 @@
 import React,{useEffect} from 'react'
+import Refresh from "../Token/Refresh";
+
 
 const PendingOrder = (props) => {
   return (
     <div>
+      <Refresh/>
         <div className="overflow-x-auto">
   <table className="table">
     {/* head */}

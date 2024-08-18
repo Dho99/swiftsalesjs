@@ -14,7 +14,6 @@ function Dashboard(props) {
     })
       .then((resp) => resp.json())
       .then((result) => {
-        console.log(result);
         setData(result.data);
       }).catch((err) => {
         console.log(err.message);

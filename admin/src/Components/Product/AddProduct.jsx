@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import noImage from "../../assets/Images/no-image.jpeg";
 import { useNavigate } from "react-router-dom";
+import Refresh from "../Token/Refresh";
 
 const AddProduct = (props) => {
   useEffect(() => {
@@ -83,6 +84,7 @@ const AddProduct = (props) => {
 
   return (
     <div className="bg-white rounded-lg p-5 overflow-auto">
+      <Refresh/>
       <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-7 mb-5 gap-y-3">
         <div className="w-full">
           <div className="label">

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import noImage from "../../assets/Images/no-image.jpeg";
+import Refresh from "../Token/Refresh";
 
 const ViewProduct = (props) => {
   const params = useParams();
@@ -92,6 +93,7 @@ const ViewProduct = (props) => {
 
   return (
     <div className="bg-white rounded-lg p-5 overflow-auto">
+      <Refresh/>
       <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-7 mb-5 gap-y-3">
         {/* <p>{product.category}</p> */}
         <div className="w-full">

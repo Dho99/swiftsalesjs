@@ -1,4 +1,6 @@
 import React,{useEffect} from 'react'
+import Refresh from "../Token/Refresh";
+
 
 const StockProduct = (props) => {
   useEffect(() => {
@@ -6,7 +8,10 @@ const StockProduct = (props) => {
   },[props])
 
   return (
+    <>
+    <Refresh/>
     <div>StockProduct</div>
+    </>
   )
 }
 
